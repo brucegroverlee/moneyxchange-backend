@@ -1,0 +1,145 @@
+openapi: 3.0.0
+info:
+  description: Moneyxchange.io API
+  version: "1.0.0-oas3"
+  title: moneyxchange.io API
+  contact:
+    email: brucegrover.lee@gmail.com
+tags:
+  - name: Public
+    description: Public access
+  - name: Private
+    description: Bearer Authentication required
+paths:
+  /login:
+    post:
+      tags: 
+        - Public
+      summary: Get the auth
+      operationId: login
+      description: Get the auth token.
+      requestBody:
+        description: Credential object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '202':
+          description: Accepted. Return the token auth.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+                  
+        '400':
+          description: Invalid credential
+        '500':
+          description: Internal Server Error
+      
+  /currencies:
+    get:
+      tags:
+        - Private
+      summary: Get list of the currencies
+      operationId: getAllCurrencies
+      description: Get the array of the currencies. Bearer Authentication required.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Currency'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /exchanges/{pair}:
+    get:
+      tags:
+        - Private
+      summary: Get the exchange of a pair.
+      operationId: getExchange
+      description: Get the exchange of a pair of currencies. Bearer Authentication required.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: pair
+          in: path
+          description: It is the pair of exchange.
+          required: true
+          example: 'USDEUR'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Results matching criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rate'
+                  
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+components:
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT 
+      
+  schemas:
+    LoginRequest:
+      properties:
+        email:
+          type: string
+          example: bruce@gmail.com
+        password:
+          type: string
+          example: 12345678
+    LoginResponse:
+      properties:
+        token:
+          type: string
+          description: It is a JWT.
+          example: aHNvfoF8r4fDkffd9VTdkfnieb
+          
+    Currency:
+      properties:
+        object:
+          type: string
+          example: currency
+        code:
+          type: string
+          example: USD
+        symbol:
+          type: string
+          example: $
+        isBase:
+          type: boolean
+          description: >-
+            if it is true, this currency is the base of all exchanges. E.g.
+            USDEUR, USDPEN, USDCOL and so on.
+          example: true
+    Rate:
+      properties:
+        object:
+          type: string
+          example: rate
+        rate:
+          type: number
+          format: float
+          example: 0.89
+        pair:
+          type: string
+          example: USDEUR
+servers:
+  - url: 'https://virtserver.swaggerhub.com/brucegroverlee/moneyxchange.io/1.0.0'
