@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 
 import usersRouter from './users/router';
 import currenciesRouter from './currencies/router';
+import exchangesRouter from './exchanges/router';
 
 const router = express.Router();
 
@@ -13,6 +14,7 @@ router.use(bodyParser.json({type: 'application/json'}));
 
 router.use(usersRouter);
 router.use(currenciesRouter);
+router.use(exchangesRouter);
 
 router.use((request, response) => { 
   response.status(404);
