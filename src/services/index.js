@@ -1,6 +1,8 @@
+import currencies from './currencies';
 import users from './users';
 
 const services = {
+  currencies,
   users,
 };
 
