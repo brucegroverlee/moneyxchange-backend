@@ -10,7 +10,7 @@ export default async function getRate(pair) {
       const pairUpperCase = pair.toUpperCase();
       const exchange = await models.exchanges.findOne({ where: { pair: pairUpperCase }});
       if (exchange) {
-        exchange.rate = Math.random();
+        exchange.dataValues['rate'] = Math.random();
         return exchange;
       } else {
         return null;

@@ -8,7 +8,8 @@ export default async function getRateList() {
   try {
     const exchangetmp = await models.exchanges.findAll({});
     const exchanges = exchangetmp.map((elem) => {
-      elem.rate = Math.random();
+      debugger
+      elem.dataValues['rate'] = Math.random();
       return elem;
     });
     return exchanges;
