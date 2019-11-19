@@ -16,6 +16,14 @@ const Exchange = sequelize.define('exchange', {
   // options
 });
 
-Exchange.sync();
+Exchange.sync().then(async () => {
+  const exchanges = await Exchange.findAll({});
+  if (exchanges.length === 0) {
+    await Exchange.create({
+      pair: 'USDEUR',
+    });
+  }
+  return exchanges;
+});
 
 export default Exchange;

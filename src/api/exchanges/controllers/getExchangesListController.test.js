@@ -13,7 +13,7 @@ import * as jwt from '@utils/jwt';
 
 chai.use(chaiHttp);
 
-describe('Get Exchange test suit', () => {
+describe('Get Exchanges list test suit', () => {
   let requester;
   let user;
 
@@ -34,48 +34,42 @@ describe('Get Exchange test suit', () => {
     requester.close(done);
   });
 
-  describe('GET /exchanges/{pair}', () => {
+  describe('GET /exchanges', () => {
     test('It should returns the exchange rate.', async (done) => {
       const token = jwt.createToken(user.id);
       const res = await requester
-      .get('/exchanges/usdeur')
+      .get('/exchanges')
       .set('Authorization', `Bearer ${token}`);
       expect(res.status).toEqual(200);
       expect(typeof res.body).toEqual('object');
-      expect(res.body.object).toEqual('exchange');
-      expect(res.body.pair).toEqual('USDEUR');
-      done();
-    });
-
-    test('It shouldn\'t returns the exchange rate. The exchange is invalid.', async (done) => {
-      const token = jwt.createToken(user.id);
-      const res = await requester
-      .get('/exchanges/usdchf')
-      .set('Authorization', `Bearer ${token}`);
-      expect(res.status).toEqual(404);
+      const exchange = res.body.find((elem) => {
+        return elem.pair === 'USDEUR';
+      });
+      expect(exchange.object).toEqual('exchange');
+      expect(exchange.pair).toEqual('USDEUR');
       done();
     });
 
     test('It shouldn\'t returns the exchange rate. The token is invalid.', async (done) => {
       const token = jwt.createToken('1234567890');
       const res = await requester
-      .get('/exchanges/usdeur')
-      .set('Authorization', `Bearer ${token}`);
+      .get('/exchanges')
+      .set('Authorization', `Bearer ${token}`)
       expect(res.status).toEqual(401);
       done();
     });
 
     test('It shouldn\'t returns the exchange rate. The token is invalid.', async (done) => {
       const res = await requester
-      .get('/exchanges/usdeur')
-      .set('Authorization', `Bearer`);
+      .get('/exchanges')
+      .set('Authorization', `Bearer`)
       expect(res.status).toEqual(401);
       done();
     });
 
     test('It shouldn\'t returns the exchange rate. The token is invalid.', async (done) => {
       const res = await requester
-      .get('/exchanges/usdeur');
+      .get('/exchanges')
       expect(res.status).toEqual(401);
       done();
     });

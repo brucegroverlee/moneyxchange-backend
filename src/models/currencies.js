@@ -24,6 +24,16 @@ const Currency = sequelize.define('currencie', {
   // options
 });
 
-Currency.sync();
+Currency.sync().then(async () => {
+  const currencies = await Currency.findAll({});
+  debugger
+  if (currencies.length === 0) {
+    await Currency.bulkCreate([
+      { code: 'USD', symbol: '$', isBase: true, },
+      { code: 'EUR', symbol: '\u20AC', },
+    ]);
+  }
+  return currencies;
+});
 
 export default Currency;

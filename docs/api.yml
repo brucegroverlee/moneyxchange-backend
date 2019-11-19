@@ -60,6 +60,32 @@ paths:
           description: Unauthorized
         '500':
           description: Internal Server Error
+  /exchanges:
+    get:
+      tags:
+        - Private
+      summary: Get the list of exchanges.
+      operationId: getAllExchanges
+      description: Get the list of exchanges. Bearer Authentication required.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Exchange'
+                  
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+
   /exchanges/{pair}:
     get:
       tags:
@@ -83,7 +109,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Rate'
+                $ref: '#/components/schemas/Exchange'
                   
         '401':
           description: Unauthorized
@@ -93,7 +119,7 @@ paths:
           description: Internal Server Error
 components:
   securitySchemes:
-    bearerAuth:            # arbitrary name for the security scheme
+    bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT 
@@ -131,7 +157,7 @@ components:
             if it is true, this currency is the base of all exchanges. E.g.
             USDEUR, USDPEN, USDCOL and so on.
           example: true
-    Rate:
+    Exchange:
       properties:
         object:
           type: string

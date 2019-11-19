@@ -44,7 +44,7 @@ async function getToken(payload) {
   const { request, response } = payload;
   let scheme = null;
   let token = null;
-  if (request.headers || request.headers.authorization) {
+  if (request.headers && request.headers.authorization) {
     const parts = request.headers.authorization.split(' ');
     if (parts.length === 2) {
       scheme = parts[0];
